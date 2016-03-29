@@ -7,13 +7,8 @@ $fb = new Facebook\Facebook([
   'default_graph_version' => 'v2.5',
 ]);
 
-// $request = new Facebook\FacebookRequest(
-//   $_SESSION['facebook_access_token'],
-//   'GET',
-//   '/1124381354241279/groups'
-// );
-// var_dump($request);die;
 $helper = $fb->getRedirectLoginHelper();
+
 try {
   $accessToken = $helper->getAccessToken();
 } catch(Facebook\Exceptions\FacebookResponseException $e) {
@@ -27,9 +22,6 @@ try {
 }
 
 if (isset($accessToken)) {
-  // Logged in!
-  $_SESSION['facebook_access_token'] = (string) $accessToken;
-
-  // Now you can redirect to another page and use the
-  // access token from $_SESSION['facebook_access_token']
+  $_SESSION['fb_access_token'] = (string) $accessToken;
+  header('location:index.php');
 }

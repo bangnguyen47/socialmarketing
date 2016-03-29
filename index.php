@@ -7,8 +7,23 @@ $fb = new Facebook\Facebook([
   'default_graph_version' => 'v2.5',
 ]);
 
-$helper = $fb->getRedirectLoginHelper();
-$permissions = ['email', 'user_likes']; // optional
-$loginUrl = $helper->getLoginUrl('http://localhost:8080/socialmarketing/login-callback.php', $permissions);
+if(isset($_SESSION['fb_access_token'])) {
+	// unset($_SESSION['fb_access_token']);
+	try {
+		$response = $fb->get('/me/groups', $_SESSION['fb_access_token']);
+	} catch(Facebook\Exceptions\FacebookResponseException $e) {
+		// When Graph returns an error
+		echo 'Graph returned an error: ' . $e->getMessage();
+		exit;
+	} catch(Facebook\Exceptions\FacebookSDKException $e) {
+		// When validation fails or other local issues
+		echo 'Facebook SDK returned an error: ' . $e->getMessage();
+		exit;
+	}
 
-echo '<a href="' . $loginUrl . '">Log in with Facebook!</a>';
+	// $response = $request->execute();
+// $graphObject = $response->getGraphObject();
+	var_dump($response);
+} else {
+	header('location:login.php');
+}
